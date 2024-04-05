@@ -1,0 +1,29 @@
+dependencies {
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.activity
+    implementation libs.androidx.constraintlayout
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    implementation libs.androidx.annotation
+
+    implementation libs.androidx.cardview
+    implementation libs.androidx.recyclerview
+    implementation libs.material
+    implementation libs.glide
+
+    implementation libs.hilt.android
+    ksp libs.dagger.hilt.compiler
+
+    //coroutine
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+
+    api libs.androidx.lifecycle.livedata.ktx
+
+    implementation libs.shimmer
+    implementation(libs.androidx.paging.runtime.ktx)
+
+}
