@@ -10,7 +10,9 @@ import com.pahnal.submissioncapstone.core.R
 import com.pahnal.submissioncapstone.core.databinding.ItemMovieBinding
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 
-class MoviePagingAdapter :
+class MoviePagingAdapter(
+    private val onClick: (movie: Movie, position: Int) -> Unit
+) :
     PagingDataAdapter<Movie, MoviePagingAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -26,13 +28,13 @@ class MoviePagingAdapter :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
-            holder.bind(item)
+            holder.bind(item, position)
         }
     }
 
     inner class MyViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie) {
+        fun bind(movie: Movie, position: Int) {
             Glide.with(itemView.context)
                 .load(movie.getPosterUrl())
                 .centerCrop()
@@ -40,6 +42,9 @@ class MoviePagingAdapter :
                 .into(binding.ivMovie)
 
             binding.tvTitle.text = movie.title
+            binding.root.setOnClickListener {
+                onClick(movie, position)
+            }
         }
     }
 

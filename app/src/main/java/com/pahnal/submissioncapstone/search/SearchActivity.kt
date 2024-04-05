@@ -1,5 +1,6 @@
 package com.pahnal.submissioncapstone.search
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pahnal.submissioncapstone.R
 import com.pahnal.submissioncapstone.core.ui.MoviePagingAdapter
 import com.pahnal.submissioncapstone.databinding.ActivitySearchBinding
+import com.pahnal.submissioncapstone.movie_detail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,7 +55,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupAdapters() {
         rvMovie = binding.rvMovie
-        adapter = MoviePagingAdapter()
+        adapter = MoviePagingAdapter { movie, position ->
+            val intent = Intent(this, MovieDetailActivity::class.java)
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+            startActivity(intent)
+        }
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)

@@ -18,6 +18,7 @@ import com.pahnal.submissioncapstone.core.ui.MoviePagingAdapter
 import com.pahnal.submissioncapstone.core.utils.toGone
 import com.pahnal.submissioncapstone.core.utils.toVisible
 import com.pahnal.submissioncapstone.databinding.ActivityMainBinding
+import com.pahnal.submissioncapstone.movie_detail.MovieDetailActivity
 import com.pahnal.submissioncapstone.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -80,7 +81,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupAdapters() {
         rvMovie = binding.rvMovie
-        adapter = MoviePagingAdapter()
+        adapter = MoviePagingAdapter { movie, position ->
+            val intent = Intent(this, MovieDetailActivity::class.java)
+            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+            startActivity(intent)
+        }
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)

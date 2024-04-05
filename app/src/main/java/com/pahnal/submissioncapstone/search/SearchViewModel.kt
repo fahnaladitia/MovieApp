@@ -38,10 +38,9 @@ class SearchViewModel @Inject constructor(private val movieUseCase: MovieUseCase
         _currentQuery.value = query
         job?.cancel()
         job = viewModelScope.launch {
-            delay(500L)
             setLoading(true)
+            delay(500L)
             movieUseCase.searchMovies(query)
-
                 .collectLatest { movies ->
                     Log.d("searchMovies", query)
                     setLoading(false)
