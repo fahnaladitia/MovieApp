@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: MoviePagingAdapter
     private lateinit var rvMovie: RecyclerView
-    private var isMovieLinearTypeVisible = false
     private var currentMovieType: MovieType = MovieType.POPULAR
 
     private val viewModel: MainViewModel by viewModels()
@@ -41,36 +40,27 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.searchBar)
         supportActionBar?.title = getString(R.string.app_name)
 
-
         setupMenuType()
-        setupAdapter()
-        setupViewModel()
-        binding.srl.setOnRefreshListener {
-            viewModel.getMovies(currentMovieType)
-
-        }
-
+        setupAdapters()
+        setupObservers()
+        setupButton()
     }
 
-    private fun setupViewModel() {
-        viewModel.errorText.observe(this) { value ->
-            if (value.isNullOrEmpty()) {
-                binding.tvError.toGone()
-            } else {
-                binding.tvError.toVisible()
-                binding.tvError.text = value
-            }
+    private fun setupButton() {
+        binding.srl.setOnRefreshListener {
+            viewModel.getMovies(currentMovieType)
         }
+        binding.movieMenuType.setOnClickListener {
+            movieTypeMenu.show()
+        }
+    }
+
+    private fun setupObservers() {
         viewModel.isLoading.observe(this) { value ->
             binding.srl.isRefreshing = value
             if (!value) {
                 binding.linearType.toVisible()
-                isMovieLinearTypeVisible = true
             }
-        }
-
-        viewModel.movieList.observe(this) { value ->
-//            adapter.submitData(value)
         }
         viewModel.moviePagingList.observe(this) {value ->
             adapter.submitData(lifecycle,value)
@@ -88,13 +78,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
-
-
-    private fun setupAdapter() {
+    private fun setupAdapters() {
         rvMovie = binding.rvMovie
-//        adapter = MovieAdapter()
         adapter = MoviePagingAdapter()
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
@@ -132,9 +117,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.movieMenuType.setOnClickListener {
-            movieTypeMenu.show()
-        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -165,11 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-
     companion object {
         private val TAG = MainActivity::class.java.simpleName
     }
-
-
 }

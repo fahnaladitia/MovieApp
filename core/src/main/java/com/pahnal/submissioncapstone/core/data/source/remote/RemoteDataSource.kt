@@ -7,14 +7,17 @@ import com.pahnal.submissioncapstone.core.data.source.remote.network.ApiService
 import com.pahnal.submissioncapstone.core.data.source.remote.response.MovieResponse
 import com.pahnal.submissioncapstone.core.domain.enums.MovieType
 import com.pahnal.submissioncapstone.core.utils.MoviePagingSource
+import com.pahnal.submissioncapstone.core.utils.MoviePagingType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
 
-//    suspend fun searchUsers(query: String): Flow<ApiResponse<SearchUsersResponse>> =
+//    suspend fun searchMovies(query: String): Flow<ApiResponse<SearchUsersResponse>> =
 //        flow {
 //            try {
 //                val response = apiService.getSearchUser(query)
@@ -34,40 +37,28 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
 //            }
 //        }.flowOn(Dispatchers.IO)
 
-     fun getMovieList(movieType: MovieType): Flow<PagingData<MovieResponse>> {
-//        try {
-//            val type: String = when (movieType) {
-//                MovieType.POPULAR -> "popular"
-//                MovieType.NOW_PLAYING -> "now_playing"
-//                MovieType.TOP_RATED -> "top_rated"
-//                MovieType.UPCOMING -> "upcoming"
-//            }
-//
-//            val response = apiService.getMovieList(type, page = page)
-//
-//            if (response.results.isNullOrEmpty()) {
-//                emit(ApiResponse.Empty)
-//                return@flow
-//            }
-//            emit(ApiResponse.Success(response))
-//        } catch (e: HttpException) {
-//            emit(ApiResponse.Error(e.localizedMessage?.toString() ?: ""))
-//            Log.e(TAG, "HttpException", e)
-//        } catch (e: IOException) {
-//            emit(ApiResponse.Error(e.localizedMessage?.toString() ?: ""))
-//            Log.e(TAG, "Exception", e)
-//        }
-//    }.flowOn(Dispatchers.IO)
-
+    fun getMovieList(movieType: MovieType): Flow<PagingData<MovieResponse>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
                 enablePlaceholders = false,
             ),
             pagingSourceFactory = {
-                MoviePagingSource(apiService,movieType)
+                MoviePagingSource(apiService, MoviePagingType.SearchMovieByType(movieType))
             }
-        ).flow
+        ).flow.flowOn(Dispatchers.IO)
+    }
+
+    fun searchMovies(query: String): Flow<PagingData<MovieResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = {
+                MoviePagingSource(apiService, MoviePagingType.SearchMovieByQuery(query))
+            }
+        ).flow.flowOn(Dispatchers.IO)
     }
 
     companion object {

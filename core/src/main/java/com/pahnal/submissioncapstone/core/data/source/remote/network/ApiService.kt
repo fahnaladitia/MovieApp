@@ -17,4 +17,13 @@ interface ApiService {
         @Query("page") page: Int = 1,
     ): MovieListResponse
 
+
+    @GET("search/movie")
+    @Headers("Authorization: Bearer $MOVIEDB_TOKEN_KEY")
+    suspend fun searchMovies(
+        @Query("query") query: String = "a",
+        @Query("language") language: String = "en-US",
+        @Query("page") page: Int = 1,
+    ): MovieListResponse
+
 }

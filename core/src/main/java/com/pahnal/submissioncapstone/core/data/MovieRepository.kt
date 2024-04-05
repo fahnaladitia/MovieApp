@@ -40,5 +40,11 @@ class MovieRepository @Inject constructor(
         }
     }
 
+    override fun searchMovies(query: String): Flow<PagingData<Movie>> {
+        return  remoteDataSource.searchMovies(query).map { pagingData ->
+            pagingData.map(MovieResponse::toDomain)
+        }
+    }
+
 
 }

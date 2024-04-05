@@ -6,6 +6,6 @@ import com.pahnal.submissioncapstone.core.domain.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface IMovieRepository {
-//    fun getAllMovies(movieType: MovieType): Flow<Resource<List<Movie>>>
     fun getAllMovies(movieType: MovieType): Flow<PagingData<Movie>>
+    fun searchMovies(query: String): Flow<PagingData<Movie>>
 }

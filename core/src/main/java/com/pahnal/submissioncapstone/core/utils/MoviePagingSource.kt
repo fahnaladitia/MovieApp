@@ -8,9 +8,14 @@ import com.pahnal.submissioncapstone.core.domain.enums.MovieType
 import okio.IOException
 import retrofit2.HttpException
 
+sealed class MoviePagingType {
+    data class SearchMovieByQuery(val query: String) : MoviePagingType()
+    data class SearchMovieByType(val movieType: MovieType) : MoviePagingType()
+}
+
 class MoviePagingSource(
     private val apiService: ApiService,
-    private val movieType: MovieType
+    private val moviePagingType: MoviePagingType
 ) : PagingSource<Int, MovieResponse>() {
 
     private companion object {
@@ -28,13 +33,22 @@ class MoviePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponse> {
         val pageIndex = params.key ?: INITIAL_PAGE_INDEX
         return try {
-            val type: String = when (movieType) {
-                MovieType.POPULAR -> "popular"
-                MovieType.NOW_PLAYING -> "now_playing"
-                MovieType.TOP_RATED -> "top_rated"
-                MovieType.UPCOMING -> "upcoming"
+            val movies: List<MovieResponse>? = when (moviePagingType) {
+                is MoviePagingType.SearchMovieByType -> {
+                    val type: String = when (moviePagingType.movieType) {
+                        MovieType.POPULAR -> "popular"
+                        MovieType.NOW_PLAYING -> "now_playing"
+                        MovieType.TOP_RATED -> "top_rated"
+                        MovieType.UPCOMING -> "upcoming"
+                    }
+                    apiService.getMovieList(type = type, page = pageIndex).results
+                }
+
+                is MoviePagingType.SearchMovieByQuery -> {
+                    apiService.searchMovies(query = moviePagingType.query, page = pageIndex).results
+                }
             }
-            val movies = apiService.getMovieList(type = type, page = pageIndex).results
+
             val nextKey = if (movies.isNullOrEmpty()) {
                 null
             } else {
