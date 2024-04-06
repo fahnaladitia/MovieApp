@@ -22,26 +22,6 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
 
-//    suspend fun searchMovies(query: String): Flow<ApiResponse<SearchUsersResponse>> =
-//        flow {
-//            try {
-//                val response = apiService.getSearchUser(query)
-//
-//                if (response.items.isNullOrEmpty()) {
-//                    emit(ApiResponse.Empty)
-//                } else {
-//                    emit(ApiResponse.Success(response))
-//                }
-//
-//            } catch (e: HttpException) {
-//                emit(ApiResponse.Error(e.localizedMessage?.toString() ?: ""))
-//                Log.e(TAG, "searchUsers: HttpException", e)
-//            } catch (e: Exception) {
-//                emit(ApiResponse.Error(e.localizedMessage?.toString() ?: ""))
-//                Log.e(TAG, "searchUsers: Exception", e)
-//            }
-//        }.flowOn(Dispatchers.IO)
-
     fun getMovieList(movieType: MovieType): Flow<PagingData<MovieResponse>> {
         return Pager(config = PagingConfig(
             pageSize = 20,

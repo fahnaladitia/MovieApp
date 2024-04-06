@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pahnal.submissioncapstone.R
 import com.pahnal.submissioncapstone.core.domain.enums.MovieType
+import com.pahnal.submissioncapstone.core.domain.model.Movie
 import com.pahnal.submissioncapstone.core.ui.MoviePagingAdapter
+import com.pahnal.submissioncapstone.core.ui.OnClickListenerMovieAdapter
 import com.pahnal.submissioncapstone.core.utils.toGone
 import com.pahnal.submissioncapstone.core.utils.toVisible
 import com.pahnal.submissioncapstone.databinding.ActivityMainBinding
@@ -91,22 +93,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupAdapters() {
         rvMovie = binding.rvMovie
         adapter = MoviePagingAdapter(
-            onClick = { movie ->
-                val intent = Intent(this, MovieDetailActivity::class.java)
-                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
-                requestPageLauncher.launch(intent)
-
-            },
-            onClickButtonFavorite = { _, position ->
-                adapter.snapshot()[position]?.let {
-                    val isFavorite = !it.isFavorite
-                    it.isFavorite = isFavorite
-                    viewModel.setFavorite(it, isFavorite)
-                    adapter.notifyItemChanged(position)
+            object : OnClickListenerMovieAdapter {
+                override fun onClick(movie: Movie) {
+                    val intent = Intent(this@MainActivity, MovieDetailActivity::class.java)
+                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+                    requestPageLauncher.launch(intent)
                 }
 
+                override fun onClickButtonFavorite(position: Int) {
+                    adapter.snapshot()[position]?.let {
+                        val isFavorite = !it.isFavorite
+                        it.isFavorite = isFavorite
+                        viewModel.setFavorite(it, isFavorite)
+                        adapter.notifyItemChanged(position)
+                    }
+                }
 
             }
+
         )
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter

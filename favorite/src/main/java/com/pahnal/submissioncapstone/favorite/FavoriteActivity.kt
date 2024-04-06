@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.pahnal.submissioncapstone.R
+import com.pahnal.submissioncapstone.core.domain.model.Movie
 import com.pahnal.submissioncapstone.core.ui.MovieAdapter
+import com.pahnal.submissioncapstone.core.ui.OnClickListenerMovieAdapter
 import com.pahnal.submissioncapstone.di.MovieModuleDependencies
 import com.pahnal.submissioncapstone.favorite.databinding.ActivityFavoriteBinding
 import com.pahnal.submissioncapstone.movie_detail.MovieDetailActivity
@@ -54,21 +56,20 @@ class FavoriteActivity : AppCompatActivity() {
 
     private fun setupUI() {
         adapter = MovieAdapter(
-            onClick = { movie ->
-                val intent = Intent(this, MovieDetailActivity::class.java)
-                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
-                startActivity(intent)
-
-            },
-            onClickButtonFavorite = { _, position ->
-                adapter.currentList[position]?.let {
-                    val isFavorite = !it.isFavorite
-                    it.isFavorite = isFavorite
-                    viewModel.setFavorite(it, isFavorite)
-                    adapter.notifyItemChanged(position)
+            object : OnClickListenerMovieAdapter {
+                override fun onClick(movie: Movie) {
+                    val intent = Intent(this@FavoriteActivity, MovieDetailActivity::class.java)
+                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+                    startActivity(intent)
                 }
-
-
+                override fun onClickButtonFavorite(position: Int) {
+                    adapter.currentList[position]?.let {
+                        val isFavorite = !it.isFavorite
+                        it.isFavorite = isFavorite
+                        viewModel.setFavorite(it, isFavorite)
+                        adapter.notifyItemChanged(position)
+                    }
+                }
             }
         )
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)

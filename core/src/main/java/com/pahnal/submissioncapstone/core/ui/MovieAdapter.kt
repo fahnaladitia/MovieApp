@@ -13,8 +13,7 @@ import com.pahnal.submissioncapstone.core.databinding.ItemMovieBinding
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 
 class MovieAdapter(
-    private val onClick: (movie: Movie) -> Unit,
-    private val onClickButtonFavorite: (movie: Movie, position: Int) -> Unit,
+    private val listenerMovieAdapter: OnClickListenerMovieAdapter
 ) : ListAdapter<Movie, MovieAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -41,12 +40,12 @@ class MovieAdapter(
                 .into(binding.ivMovie)
             setStatusFavorite(movie.isFavorite, itemView.context)
             binding.btnFavorite.setOnClickListener {
-                onClickButtonFavorite(movie, position)
+                listenerMovieAdapter.onClickButtonFavorite(position)
             }
 
             binding.tvTitle.text = movie.title
             binding.root.setOnClickListener {
-                onClick(movie)
+                listenerMovieAdapter.onClick(movie)
             }
         }
 
