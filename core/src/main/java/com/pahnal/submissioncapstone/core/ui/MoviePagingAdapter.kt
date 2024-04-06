@@ -1,7 +1,9 @@
 package com.pahnal.submissioncapstone.core.ui
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +13,8 @@ import com.pahnal.submissioncapstone.core.databinding.ItemMovieBinding
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 
 class MoviePagingAdapter(
-    private val onClick: (movie: Movie, position: Int) -> Unit
+    private val onClick: (movie: Movie) -> Unit,
+    private val onClickButtonFavorite: (movie: Movie, position: Int) -> Unit,
 ) :
     PagingDataAdapter<Movie, MoviePagingAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
@@ -41,10 +44,23 @@ class MoviePagingAdapter(
                 .placeholder(R.drawable.item_placeholder)
                 .into(binding.ivMovie)
 
+            setStatusFavorite(movie.isFavorite, itemView.context)
+            binding.btnFavorite.setOnClickListener {
+                onClickButtonFavorite(movie, position)
+            }
             binding.tvTitle.text = movie.title
             binding.root.setOnClickListener {
-                onClick(movie, position)
+                onClick(movie)
             }
+        }
+
+        private fun setStatusFavorite(statusFavorite: Boolean, context: Context) {
+            binding.btnFavorite.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    if (statusFavorite) R.drawable.ic_favorite_red else R.drawable.ic_favorite_white
+                )
+            )
         }
     }
 

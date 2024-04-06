@@ -1,15 +1,16 @@
 package com.pahnal.submissioncapstone.main
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pahnal.submissioncapstone.R
@@ -33,6 +34,12 @@ class MainActivity : AppCompatActivity() {
     private var currentMovieType: MovieType = MovieType.POPULAR
 
     private val viewModel: MainViewModel by viewModels()
+
+    private val requestPageLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        viewModel.getMovies(currentMovieType)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +70,8 @@ class MainActivity : AppCompatActivity() {
                 binding.linearType.toVisible()
             }
         }
-        viewModel.moviePagingList.observe(this) {value ->
-            adapter.submitData(lifecycle,value)
+        viewModel.moviePagingList.observe(this) { value ->
+            adapter.submitData(lifecycle, value)
         }
         viewModel.movieType.observe(this) { value ->
             currentMovieType = value
@@ -76,16 +83,28 @@ class MainActivity : AppCompatActivity() {
                 else -> getString(R.string.popular)
             }
         }
-
     }
 
     private fun setupAdapters() {
         rvMovie = binding.rvMovie
-        adapter = MoviePagingAdapter { movie, position ->
-            val intent = Intent(this, MovieDetailActivity::class.java)
-            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
-            startActivity(intent)
-        }
+        adapter = MoviePagingAdapter(
+            onClick = { movie ->
+                val intent = Intent(this,MovieDetailActivity::class.java)
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+                requestPageLauncher.launch(intent)
+
+            },
+            onClickButtonFavorite = { _, position ->
+                adapter.snapshot()[position]?.let {
+                    val isFavorite = !it.isFavorite
+                    it.isFavorite = isFavorite
+                    viewModel.setFavorite(it, isFavorite)
+                    adapter.notifyItemChanged(position)
+                }
+
+
+            }
+        )
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)
@@ -135,24 +154,26 @@ class MainActivity : AppCompatActivity() {
             R.id.action_to_search -> {
                 Log.d(TAG, "onOptionsItemSelected: action_to_search")
                 val intent = Intent(this, SearchActivity::class.java)
-                val anim = ActivityOptions
+                val options = ActivityOptionsCompat
                     .makeCustomAnimation(
                         this,
                         androidx.appcompat.R.anim.abc_fade_in,
                         androidx.appcompat.R.anim.abc_fade_out
-                    ).toBundle()
-                startActivity(intent, anim)
+                    )
+                requestPageLauncher.launch(intent,options)
             }
 
             R.id.action_to_favorite -> {
                 Log.d(TAG, "onOptionsItemSelected: action_to_favorite")
                 val uri = Uri.parse("submissioncapstone://favorite")
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                requestPageLauncher.launch(Intent(Intent.ACTION_VIEW, uri))
             }
 
         }
         return super.onOptionsItemSelected(item)
     }
+
+
     companion object {
         private val TAG = MainActivity::class.java.simpleName
     }

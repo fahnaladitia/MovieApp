@@ -1,5 +1,6 @@
 package com.pahnal.submissioncapstone.core.data.source.remote.network
 
+import com.pahnal.submissioncapstone.core.data.source.remote.response.MovieDetailResponse
 import com.pahnal.submissioncapstone.core.data.source.remote.response.MovieListResponse
 import com.pahnal.submissioncapstone.core.utils.Constants.MOVIEDB_TOKEN_KEY
 import retrofit2.http.GET
@@ -25,5 +26,13 @@ interface ApiService {
         @Query("language") language: String = "en-US",
         @Query("page") page: Int = 1,
     ): MovieListResponse
+
+
+    @GET("movie/{movieId}")
+    @Headers("Authorization: Bearer $MOVIEDB_TOKEN_KEY")
+    suspend fun getMovieDetail(
+        @Path("movieId") movieId: Int,
+        @Query("language") language: String = "en-US",
+    ): MovieDetailResponse
 
 }

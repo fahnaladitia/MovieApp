@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module(includes = [
     NetworkModule::class,
-//    DatabaseModule::class,
+    DatabaseModule::class,
 ])
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {

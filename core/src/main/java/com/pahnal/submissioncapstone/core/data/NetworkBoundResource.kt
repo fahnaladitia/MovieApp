@@ -27,9 +27,6 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
                     emit(Resource.Error(apiResponse.errorMessage,dbSource))
                 }
 
-                is ApiResponse.Empty -> {
-                    emitAll(loadFromDB().map { Resource.Success(it) })
-                }
             }
         } else {
             emitAll(loadFromDB().map { Resource.Success(it) })

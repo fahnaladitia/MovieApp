@@ -1,16 +1,27 @@
 package com.pahnal.submissioncapstone.core.di
 
-//@Module
-//@InstallIn(SingletonComponent::class)
-//class DatabaseModule {
-//
-//    @Singleton
-//    @Provides
-//    fun provideDatabase(@ApplicationContext context: Context): UserDatabase = Room.databaseBuilder(
-//        context,
-//        UserDatabase::class.java, "Users.db",
-//    ).fallbackToDestructiveMigration().build()
-//
-//    @Provides
-//    fun provideUserDao(database: UserDatabase): UserDao = database.userDao()
-//}
+import android.content.Context
+import androidx.room.Room
+import com.pahnal.submissioncapstone.core.data.source.local.room.MovieDao
+import com.pahnal.submissioncapstone.core.data.source.local.room.MovieDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+class DatabaseModule {
+
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext context: Context): MovieDatabase = Room.databaseBuilder(
+        context,
+        MovieDatabase::class.java, "Movies.db",
+    ).fallbackToDestructiveMigration().build()
+
+    @Provides
+    fun provideMovieDao(database: MovieDatabase): MovieDao = database.movieDao()
+}

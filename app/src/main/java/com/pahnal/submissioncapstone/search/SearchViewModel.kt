@@ -49,6 +49,11 @@ class SearchViewModel @Inject constructor(private val movieUseCase: MovieUseCase
         }
     }
 
+    fun setFavorite(movie: Movie,isFavorite: Boolean) {
+        viewModelScope.launch {
+            movieUseCase.setMovieFavorite(movie,isFavorite)
+        }
+    }
 
     private fun setLoading(value: Boolean) {
         _isLoading.value = value

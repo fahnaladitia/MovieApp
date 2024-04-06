@@ -7,17 +7,19 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pahnal.submissioncapstone.R
 import com.pahnal.submissioncapstone.core.ui.MoviePagingAdapter
 import com.pahnal.submissioncapstone.databinding.ActivitySearchBinding
 import com.pahnal.submissioncapstone.movie_detail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
+import com.pahnal.submissioncapstone.R as resourceApp
+import com.pahnal.submissioncapstone.core.R as resourceCore
 
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
@@ -30,13 +32,19 @@ class SearchActivity : AppCompatActivity() {
 
     private var currentQuery: String = "a"
 
+    private val movieDetailLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        viewModel.searchMovies(currentQuery)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.searchBar)
-        supportActionBar?.title = getString(R.string.search)
+        supportActionBar?.title = getString(resourceApp.string.search)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -55,11 +63,21 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupAdapters() {
         rvMovie = binding.rvMovie
-        adapter = MoviePagingAdapter { movie, position ->
-            val intent = Intent(this, MovieDetailActivity::class.java)
-            intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
-            startActivity(intent)
-        }
+        adapter = MoviePagingAdapter(
+            onClick = { movie ->
+                val intent = Intent(this, MovieDetailActivity::class.java)
+                intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+                movieDetailLauncher.launch(intent)
+            },
+            onClickButtonFavorite = { _, position ->
+                adapter.snapshot()[position]?.let {
+                    val isFavorite = !it.isFavorite
+                    it.isFavorite = isFavorite
+                    viewModel.setFavorite(it, isFavorite)
+                    adapter.notifyItemChanged(position)
+                }
+            }
+        )
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)
@@ -78,17 +96,17 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val menuItem = menu?.findItem(R.id.app_bar_search)
+        val menuItem = menu?.findItem(resourceApp.id.app_bar_search)
         val ediExt: EditText? =
             (menuItem?.actionView as? SearchView)?.findViewById(androidx.appcompat.R.id.search_src_text)
-        ediExt?.setTextColor(resources.getColor(R.color.white, null))
-        ediExt?.setHintTextColor(resources.getColor(R.color.white, null))
+        ediExt?.setTextColor(resources.getColor(resourceCore.color.white, null))
+        ediExt?.setHintTextColor(resources.getColor(resourceCore.color.white, null))
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.search_menu, menu)
-        val menuItem = menu?.findItem(R.id.app_bar_search)
+        menuInflater.inflate(resourceApp.menu.search_menu, menu)
+        val menuItem = menu?.findItem(resourceApp.id.app_bar_search)
         setupSearchView((menuItem?.actionView as? SearchView))
         return true
     }

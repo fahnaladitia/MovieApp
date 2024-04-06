@@ -12,10 +12,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
 
-//    @Binds
-//    @Singleton
-//    abstract fun provideUserUseCase(userInterceptor: UserInterceptor): UserUseCase
-
     @Binds
     @Singleton
     abstract fun provideMovieUseCase(interceptor: MovieInterceptor): MovieUseCase

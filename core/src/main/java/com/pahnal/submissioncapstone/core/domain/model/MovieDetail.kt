@@ -16,7 +16,7 @@ data class MovieDetail(
     val rating: Double,
     val popularity: Double,
     val revenue: Double,
-    var isFavorite: Boolean,
+    var isFavorite: Boolean = false,
 ): Parcelable {
     fun getPosterUrl(): String = Constants.IMAGE_URL + imageUrl
     fun getBackdropUrl(): String = Constants.IMAGE_URL + backdropPath
