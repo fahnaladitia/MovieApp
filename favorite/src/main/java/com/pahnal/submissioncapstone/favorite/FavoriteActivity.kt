@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.pahnal.submissioncapstone.R
 import com.pahnal.submissioncapstone.core.ui.MovieAdapter
@@ -26,8 +27,6 @@ class FavoriteActivity : AppCompatActivity() {
         factory
     }
     private lateinit var adapter: MovieAdapter
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +53,9 @@ class FavoriteActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-         adapter = MovieAdapter(
+        adapter = MovieAdapter(
             onClick = { movie ->
-                val intent = Intent(this,MovieDetailActivity::class.java)
+                val intent = Intent(this, MovieDetailActivity::class.java)
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
                 startActivity(intent)
 
@@ -75,7 +74,15 @@ class FavoriteActivity : AppCompatActivity() {
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)
-        viewModel.movies.observe(this, adapter::submitList)
+        viewModel.movies.observe(this) {
+            if (it.isNullOrEmpty()) {
+                binding.tvError.text = getString(R.string.empty)
+            }
+            binding.tvError.isVisible = it.isNullOrEmpty()
+            adapter.submitList(it)
+        }
+
+
     }
 
 

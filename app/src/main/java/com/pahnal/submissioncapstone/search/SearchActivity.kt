@@ -12,8 +12,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
+import androidx.core.view.isVisible
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pahnal.submissioncapstone.R
 import com.pahnal.submissioncapstone.core.ui.MoviePagingAdapter
 import com.pahnal.submissioncapstone.databinding.ActivitySearchBinding
 import com.pahnal.submissioncapstone.movie_detail.MovieDetailActivity
@@ -81,6 +84,15 @@ class SearchActivity : AppCompatActivity() {
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)
+
+        adapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.NotLoading) {
+                val isNotEmpty = adapter.itemCount > 1
+                binding.rvMovie.isVisible = adapter.itemCount > 1
+                binding.tvError.isVisible = !isNotEmpty
+                binding.tvError.text = getString(R.string.empty)
+            }
+        }
     }
 
     private fun setupObservers() {

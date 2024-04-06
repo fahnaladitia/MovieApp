@@ -20,4 +20,5 @@
     <string name="revenue_value">$%1$d</string>
     <string name="ratings">Ratings</string>
     <string name="grade_now">Grade Now</string>
+    <string name="empty">EMPTY</string>
 </resources>

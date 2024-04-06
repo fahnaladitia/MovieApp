@@ -11,6 +11,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.isVisible
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pahnal.submissioncapstone.R
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         rvMovie = binding.rvMovie
         adapter = MoviePagingAdapter(
             onClick = { movie ->
-                val intent = Intent(this,MovieDetailActivity::class.java)
+                val intent = Intent(this, MovieDetailActivity::class.java)
                 intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
                 requestPageLauncher.launch(intent)
 
@@ -108,6 +110,15 @@ class MainActivity : AppCompatActivity() {
         binding.rvMovie.layoutManager = GridLayoutManager(this, 3)
         binding.rvMovie.adapter = adapter
         binding.rvMovie.setHasFixedSize(true)
+
+        adapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.NotLoading) {
+                val isNotEmpty = adapter.itemCount > 1
+                binding.rvMovie.isVisible = adapter.itemCount > 1
+                binding.tvError.isVisible = !isNotEmpty
+                binding.tvError.text = getString(R.string.empty)
+            }
+        }
     }
 
     private fun setupMenuType() {
@@ -160,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                         androidx.appcompat.R.anim.abc_fade_in,
                         androidx.appcompat.R.anim.abc_fade_out
                     )
-                requestPageLauncher.launch(intent,options)
+                requestPageLauncher.launch(intent, options)
             }
 
             R.id.action_to_favorite -> {
