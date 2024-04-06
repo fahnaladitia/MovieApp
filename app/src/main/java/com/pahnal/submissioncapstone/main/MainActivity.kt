@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -112,12 +113,37 @@ class MainActivity : AppCompatActivity() {
         binding.rvMovie.setHasFixedSize(true)
 
         adapter.addLoadStateListener { loadState ->
+
+            when {
+                loadState.refresh is LoadState.Error -> {
+                    showError(loadState.refresh as? LoadState.Error)
+                }
+
+                loadState.append is LoadState.Error -> {
+                    showError(loadState.append as? LoadState.Error)
+                }
+
+                loadState.prepend is LoadState.Error -> {
+                    showError(loadState.prepend as? LoadState.Error)
+                }
+            }
+
             if (loadState.refresh is LoadState.NotLoading) {
                 val isNotEmpty = adapter.itemCount > 1
                 binding.rvMovie.isVisible = adapter.itemCount > 1
                 binding.tvError.isVisible = !isNotEmpty
                 binding.tvError.text = getString(R.string.empty)
             }
+
+
+        }
+    }
+
+    private fun showError(error: LoadState.Error?) {
+        error?.let {
+
+            Toast.makeText(this, it.error.message, Toast.LENGTH_SHORT).show()
+
         }
     }
 

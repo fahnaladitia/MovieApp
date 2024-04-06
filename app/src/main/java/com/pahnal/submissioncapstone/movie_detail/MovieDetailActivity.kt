@@ -48,6 +48,9 @@ class MovieDetailActivity : AppCompatActivity() {
 
         setupExtras()
         setupObservers()
+        binding.fab.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupExtras() {
@@ -83,9 +86,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun setupButton(movieDetail: MovieDetail) {
-        binding.fab.setOnClickListener {
-            finish()
-        }
+
         binding.btnFavorite.setOnClickListener {
             val isFavorite = !movieDetail.isFavorite
             movieDetail.isFavorite = isFavorite
