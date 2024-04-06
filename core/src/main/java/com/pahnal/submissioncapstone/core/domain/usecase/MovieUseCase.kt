@@ -11,8 +11,6 @@ interface MovieUseCase {
     fun getAllMovies(movieType: MovieType): Flow<PagingData<Movie>>
     fun searchMovies(query: String): Flow<PagingData<Movie>>
     fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetail>>
-
     fun getAllMoviesFavorite(): Flow<List<Movie>>
-
     suspend fun setMovieFavorite(movie: Movie, isFavorite: Boolean)
 }

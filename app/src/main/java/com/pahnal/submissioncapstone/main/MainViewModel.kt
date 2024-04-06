@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.pahnal.submissioncapstone.core.domain.enums.MovieType
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 import com.pahnal.submissioncapstone.core.domain.usecase.MovieUseCase
@@ -14,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val movieUseCase: MovieUseCase) : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val movieUseCase: MovieUseCase,
+) : ViewModel() {
+
 
     private val _movieType: MutableLiveData<MovieType> = MutableLiveData()
     val movieType: LiveData<MovieType> = _movieType
@@ -33,7 +37,9 @@ class MainViewModel @Inject constructor(private val movieUseCase: MovieUseCase) 
     fun getMovies(stateMovieType: MovieType) {
         viewModelScope.launch {
             setLoading(true)
-            val data = movieUseCase.getAllMovies(stateMovieType)
+            val data = movieUseCase
+                .getAllMovies(stateMovieType)
+                .cachedIn(viewModelScope)
             data.collectLatest { movies ->
                 setLoading(false)
                 _movieType.value = stateMovieType
@@ -42,9 +48,9 @@ class MainViewModel @Inject constructor(private val movieUseCase: MovieUseCase) 
         }
     }
 
-    fun setFavorite(movie: Movie,isFavorite: Boolean) {
+    fun setFavorite(movie: Movie, isFavorite: Boolean) {
         viewModelScope.launch {
-            movieUseCase.setMovieFavorite(movie,isFavorite)
+            movieUseCase.setMovieFavorite(movie, isFavorite)
         }
     }
 

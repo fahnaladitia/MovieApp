@@ -1,5 +1,6 @@
 package com.pahnal.submissioncapstone.search
 
+import android.app.SearchManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -32,9 +33,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: MoviePagingAdapter
     private lateinit var rvMovie: RecyclerView
 
+
     private val viewModel: SearchViewModel by viewModels()
 
-    private var currentQuery: String = "a"
+    private var currentQuery: String = ""
 
     private val movieDetailLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -47,6 +49,11 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (savedInstanceState != null) {
+            Log.d(TAG, "onCreate: $currentQuery")
+            currentQuery = savedInstanceState.getString(CURRENT_SEARCH_QUERY) ?: ""
+        }
+
         setSupportActionBar(binding.searchBar)
         supportActionBar?.title = getString(resourceApp.string.search)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -58,10 +65,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupButton() {
-        binding.srl.setOnRefreshListener {
-            viewModel.searchMovies(query = currentQuery)
-        }
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(CURRENT_SEARCH_QUERY, currentQuery)
+        super.onSaveInstanceState(outState)
     }
 
 
@@ -117,7 +126,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.currentQuery.observe(this) { value ->
-            currentQuery = value
+            binding.srl.setOnRefreshListener {
+                viewModel.searchMovies(query = value)
+            }
         }
         viewModel.isLoading.observe(this) { value ->
             binding.srl.isRefreshing = value
@@ -144,6 +155,16 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupSearchView(searchView: SearchView?) {
+
+        val searchManager = getSystemService(SearchManager::class.java)
+        searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView?.isIconified = true
+        searchView?.onActionViewExpanded()
+        searchView?.setQuery(currentQuery, false)
+        searchView?.isFocusable = true
+
+
+
         searchView?.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 return false
@@ -152,8 +173,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String): Boolean {
 
                 Log.d(TAG, "onQueryTextChange: $newText")
-                val text = newText.ifEmpty { "a" }
-                viewModel.searchMovies(query = text)
+                currentQuery = newText.ifEmpty { "a" }
+                viewModel.searchMovies(query = currentQuery)
 
                 return false
             }
@@ -183,5 +204,6 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = SearchActivity::class.java.simpleName
+        const val CURRENT_SEARCH_QUERY = "searchQuery"
     }
 }

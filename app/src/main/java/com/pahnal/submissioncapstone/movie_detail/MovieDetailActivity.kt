@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -91,7 +90,6 @@ class MovieDetailActivity : AppCompatActivity() {
             val isFavorite = !movieDetail.isFavorite
             movieDetail.isFavorite = isFavorite
             viewModel.setFavoriteMovie(movieDetail, isFavorite)
-            Toast.makeText(this, isFavorite.toString(), Toast.LENGTH_SHORT).show()
             setStatusFavorite(movieDetail.isFavorite)
         }
     }

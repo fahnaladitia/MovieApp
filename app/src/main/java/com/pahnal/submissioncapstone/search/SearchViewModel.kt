@@ -1,11 +1,12 @@
 package com.pahnal.submissioncapstone.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 import com.pahnal.submissioncapstone.core.domain.usecase.MovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,9 +17,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val movieUseCase: MovieUseCase) : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val movieUseCase: MovieUseCase,
+    state: SavedStateHandle,
+) : ViewModel() {
 
-    private val _currentQuery: MutableLiveData<String> = MutableLiveData("a")
+    private val _currentQuery: MutableLiveData<String> = MutableLiveData()
     val currentQuery: LiveData<String> = _currentQuery
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -38,20 +42,21 @@ class SearchViewModel @Inject constructor(private val movieUseCase: MovieUseCase
         _currentQuery.value = query
         job?.cancel()
         job = viewModelScope.launch {
-            setLoading(true)
             delay(500L)
+            setLoading(true)
             movieUseCase.searchMovies(query)
+                .cachedIn(viewModelScope)
                 .collectLatest { movies ->
-                    Log.d("searchMovies", query)
                     setLoading(false)
                     _moviePagingList.value = movies
+
                 }
         }
     }
 
-    fun setFavorite(movie: Movie,isFavorite: Boolean) {
+    fun setFavorite(movie: Movie, isFavorite: Boolean) {
         viewModelScope.launch {
-            movieUseCase.setMovieFavorite(movie,isFavorite)
+            movieUseCase.setMovieFavorite(movie, isFavorite)
         }
     }
 
