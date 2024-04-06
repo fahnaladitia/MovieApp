@@ -56,19 +56,20 @@ class FavoriteActivity : AppCompatActivity() {
 
     private fun setupUI() {
         adapter = MovieAdapter(
-            object : OnClickListenerMovieAdapter {
+            object : OnClickListenerMovieAdapter() {
                 override fun onClick(movie: Movie) {
                     val intent = Intent(this@FavoriteActivity, MovieDetailActivity::class.java)
                     intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
                     startActivity(intent)
                 }
+
                 override fun onClickButtonFavorite(position: Int) {
                     adapter.currentList[position]?.let {
                         val isFavorite = !it.isFavorite
                         it.isFavorite = isFavorite
                         viewModel.setFavorite(it, isFavorite)
-                        adapter.notifyItemChanged(position)
                     }
+
                 }
             }
         )

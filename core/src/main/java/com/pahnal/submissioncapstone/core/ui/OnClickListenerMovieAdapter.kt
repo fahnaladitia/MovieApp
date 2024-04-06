@@ -2,7 +2,8 @@ package com.pahnal.submissioncapstone.core.ui
 
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 
-interface OnClickListenerMovieAdapter {
-    fun onClick(movie: Movie)
-    fun onClickButtonFavorite(position: Int)
+abstract class OnClickListenerMovieAdapter {
+    open fun onClick(movie: Movie) {}
+    open fun onClickButtonFavorite(position: Int) {}
+    open fun onClickButtonFavorite(movie: Movie, position: Int) {}
 }

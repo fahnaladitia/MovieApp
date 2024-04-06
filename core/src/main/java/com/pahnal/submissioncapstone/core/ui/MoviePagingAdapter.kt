@@ -34,13 +34,13 @@ class MoviePagingAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
-            holder.bind(item, position)
+            holder.bind(item)
         }
     }
 
     inner class MyViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie, position: Int) {
+        fun bind(movie: Movie) {
             Glide.with(itemView.context)
                 .load(movie.getPosterUrl())
                 .centerCrop()
@@ -49,7 +49,8 @@ class MoviePagingAdapter(
 
             setStatusFavorite(movie.isFavorite, itemView.context)
             binding.btnFavorite.setOnClickListener {
-                listener.onClickButtonFavorite(position)
+                listener.onClickButtonFavorite(bindingAdapterPosition)
+                listener.onClickButtonFavorite(movie, bindingAdapterPosition)
             }
             binding.tvTitle.text = movie.title
             binding.root.setOnClickListener {

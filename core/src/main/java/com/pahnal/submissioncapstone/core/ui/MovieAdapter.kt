@@ -13,7 +13,7 @@ import com.pahnal.submissioncapstone.core.databinding.ItemMovieBinding
 import com.pahnal.submissioncapstone.core.domain.model.Movie
 
 class MovieAdapter(
-    private val listenerMovieAdapter: OnClickListenerMovieAdapter
+    private val listener: OnClickListenerMovieAdapter
 ) : ListAdapter<Movie, MovieAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -27,12 +27,12 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position))
     }
 
     inner class MyViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie, position: Int) {
+        fun bind(movie: Movie) {
             Glide.with(itemView.context)
                 .load(movie.getPosterUrl())
                 .centerCrop()
@@ -40,12 +40,14 @@ class MovieAdapter(
                 .into(binding.ivMovie)
             setStatusFavorite(movie.isFavorite, itemView.context)
             binding.btnFavorite.setOnClickListener {
-                listenerMovieAdapter.onClickButtonFavorite(position)
+                listener.onClickButtonFavorite(bindingAdapterPosition)
+                listener.onClickButtonFavorite(movie, bindingAdapterPosition)
             }
 
             binding.tvTitle.text = movie.title
             binding.root.setOnClickListener {
-                listenerMovieAdapter.onClick(movie)
+                listener.onClick(movie)
+
             }
         }
 
