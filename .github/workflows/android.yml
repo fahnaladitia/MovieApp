@@ -27,7 +27,7 @@ jobs:
       uses: timheuer/base64-to-file@v1.2
       with:
         fileName: keystore.jks
-        encodedString: ${{ secrets.KEYSTORE_BASE_64 }}
+        encodedString: "${{ secrets.KEYSTORE_BASE_64 }}"
       #
 #      env:
 #        ENCODED_STRING: ${{ secrets.KEYSTORE_BASE_64 }}
