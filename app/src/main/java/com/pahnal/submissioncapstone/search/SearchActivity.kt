@@ -63,12 +63,8 @@ class SearchActivity : AppCompatActivity() {
 
         setupAdapters()
         setupObservers()
-        setupButton()
     }
 
-    private fun setupButton() {
-
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(CURRENT_SEARCH_QUERY, currentQuery)
