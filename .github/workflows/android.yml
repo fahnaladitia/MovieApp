@@ -29,9 +29,8 @@ jobs:
         RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
         RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
         RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
-      run: |
-        echo ${{ secrets.KEYSTORE_BASE_64 }} | base64 --decode > keystore-b64.txt
-        base64 -d keystore-b64.txt > keystore.jks
+      run: echo ${{ secrets.KEYSTORE_BASE_64 }} | base64 --decode > keystore.jks
+#        base64 -d keystore-b64.txt > keystore.jks
 
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
