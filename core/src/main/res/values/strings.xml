@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="image_user">User Image</string>
+    <string name="image_for_poster_movie">Image For Poster Movie</string>
+    <string name="button_favorite">Button Favorite</string>
 </resources>
