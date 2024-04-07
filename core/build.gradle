@@ -22,7 +22,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -51,6 +55,8 @@ dependencies {
     implementation libs.converter.gson
     implementation libs.logging.interceptor
 
+    implementation libs.android.database.sqlcipher
+    implementation libs.androidx.sqlite.ktx
 
 
 }

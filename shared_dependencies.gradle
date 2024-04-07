@@ -27,6 +27,7 @@ dependencies {
     implementation libs.androidx.lifecycle.viewmodel.ktx
 
     implementation libs.shimmer
-    implementation(libs.androidx.paging.runtime.ktx)
+    implementation libs.androidx.paging.runtime.ktx
+    debugImplementation libs.leakcanary.android
 
 }
