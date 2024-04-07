@@ -38,7 +38,7 @@ jobs:
         files: ${{ steps.releaseApk.outputs.apkfile }}
         dest: ${{ steps.releaseApk.outputs.apkfile }}.zip
     - name: Upload Build to Artifacts
-      uses: action/upload-artifact@v3
+      uses: actions/upload-artifact@v3
       with:
         name: release-artifacts
         path: ${{ steps.releaseApk.outputs.apkfile }}
