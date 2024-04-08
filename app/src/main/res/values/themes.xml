@@ -16,6 +16,11 @@
 
     </style>
 
+    <style name="Theme.SubmissionCapstone.Starting" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="postSplashScreenTheme">@style/Theme.SubmissionCapstone</item>
+    </style>
+
     <style name="actionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/white</item>
     </style>

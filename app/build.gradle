@@ -49,5 +49,6 @@ android {
 dependencies {
     implementation project(":core")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation libs.androidx.core.splashscreen
 
 }
