@@ -5,10 +5,7 @@
 This is a simple movie app that shows a list of movies and their details. This app is built using the MVVM architecture pattern and uses the TMDB API to fetch the movie data.
 
 ## Screenshots
-<img src="screenshots/screenshot_1.jpeg" alt="Splash Screen" width="200"/>
-<img src="screenshots/screenshot_2.jpeg" alt="Home Screen" width="200"/>
-<img src="screenshots/screenshot_3.jpeg" alt="Search Screen" width="200"/>
-<img src="screenshots/screenshot_4.jpeg" alt="Favorite Screen" width="200"/>
+<img src="screenshots/screenshot_1.jpeg" alt="Splash Screen" width="200"/> <img src="screenshots/screenshot_2.jpeg" alt="Home Screen" width="200"/> <img src="screenshots/screenshot_3.jpeg" alt="Search Screen" width="200"/> <img src="screenshots/screenshot_4.jpeg" alt="Favorite Screen" width="200"/>
 
 ## Features
 - Show a list of movies
