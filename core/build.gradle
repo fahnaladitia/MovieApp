@@ -18,17 +18,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        Properties properties = new Properties()
-        if (rootProject.file("local.properties").exists()) {
-            properties.load(rootProject.file("local.properties").newDataInputStream())
-        }
-
-        buildConfigField("String","MOVIEDB_TOKEN_KEY",properties.getProperty("moviedb_token_key",""))
     }
-
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -41,12 +38,11 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        buildConfig = true
     }
 }
 
 dependencies {
-
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     //room
     implementation libs.androidx.room.ktx
     implementation libs.androidx.room.runtime
@@ -58,6 +54,8 @@ dependencies {
     implementation libs.converter.gson
     implementation libs.logging.interceptor
 
+    implementation libs.android.database.sqlcipher
+    implementation libs.androidx.sqlite.ktx
 
 
 }

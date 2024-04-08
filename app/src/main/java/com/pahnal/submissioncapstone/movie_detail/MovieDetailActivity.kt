@@ -121,7 +121,7 @@ class MovieDetailActivity : AppCompatActivity() {
         binding.btnFavorite.setImageDrawable(
             ContextCompat.getDrawable(
                 this,
-                if (statusFavorite) R.drawable.ic_favorite_red else R.drawable.ic_favorite_white
+                if (statusFavorite) R.drawable.ic_favorite_red else R.drawable.ic_favorite_grey
             )
         )
     }

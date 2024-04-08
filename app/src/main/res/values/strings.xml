@@ -4,20 +4,15 @@
 
     <string name="favorite">Favorite</string>
 
-    <string name="movie">Movie</string>
-
     <string name="upcoming">Upcoming</string>
     <string name="top_rated">Top Rated</string>
     <string name="now_playing">Now Playing</string>
     <string name="popular">Popular</string>
-    <string name="loading">Loading</string>
     <string name="image_for_backdrop_movie">Image For Backdrop Movie</string>
-    <string name="image_for_poster_movie">Image For Poster Movie</string>
     <string name="popularity">Popularity:</string>
     <string name="revenue">Revenue:</string>
     <string name="overview">Overview</string>
     <string name="button_favorite">Button Favorite</string>
-    <string name="revenue_value">$%1$d</string>
     <string name="ratings">Ratings</string>
     <string name="grade_now">Grade Now</string>
     <string name="empty">EMPTY</string>

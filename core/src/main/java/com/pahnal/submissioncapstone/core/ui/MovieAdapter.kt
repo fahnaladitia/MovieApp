@@ -41,7 +41,6 @@ class MovieAdapter(
             setStatusFavorite(movie.isFavorite, itemView.context)
             binding.btnFavorite.setOnClickListener {
                 listener.onClickButtonFavorite(bindingAdapterPosition)
-                listener.onClickButtonFavorite(movie, bindingAdapterPosition)
             }
 
             binding.tvTitle.text = movie.title

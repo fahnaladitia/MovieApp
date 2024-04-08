@@ -2,7 +2,6 @@ package com.pahnal.submissioncapstone.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -19,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val movieUseCase: MovieUseCase,
-    state: SavedStateHandle,
 ) : ViewModel() {
 
     private val _currentQuery: MutableLiveData<String> = MutableLiveData()
