@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     //room
     implementation libs.androidx.room.ktx
     implementation libs.androidx.room.runtime
