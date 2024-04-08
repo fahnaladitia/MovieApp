@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main-github-action" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main-github-action" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -35,9 +35,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Build Artifacts
-        path: app/build/outputs/
-#        name: release-artifacts
-#        path: ${{ steps.releaseApk.outputs.apkfile }}
+        path: app/build/outputs/apk/
 
     - name: Check and report lint results
       uses: hidakatsuya/action-report-android-lint@v1.1.3
